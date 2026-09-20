@@ -13,6 +13,8 @@ dependencies:
   dio: ^5.11.1
   drift_flutter: ^0.3.1
   path_provider: ^2.1.6
+  blogstore_client:
+    path: ../../../blogstore_client
 
 
 dev_dependencies:
