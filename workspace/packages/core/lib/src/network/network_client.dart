@@ -3,7 +3,7 @@ import 'network_response.dart';
 /// An abstract interface for performing network requests.
 /// Follows the Dependency Inversion Principle (SOLID) to decouple the code
 /// from concrete network library details.
-abstract interface class NetworkClient {
+abstract interface class const NetworkClient() {
   /// Sends a GET request.
   Future<NetworkResponse<T>> get<T>(
     String path, {

@@ -5,17 +5,20 @@ import 'network_exception.dart';
 import 'network_response.dart';
 
 /// A concrete implementation of [NetworkClient] using the `dio` package.
-final class DioNetworkClient implements NetworkClient {
+final class const DioNetworkClient({
+  final AppFlavorConfig? config,
+  final Dio? _dio,
+}) implements NetworkClient {
   /// Creates a [DioNetworkClient] using a primary const constructor.
   /// Both [config] and [dio] are optional named parameters.
-  const DioNetworkClient({
-    this.config,
-    Dio? dio,
-  }) : _dio = dio;
-
-  /// The flavor configuration.
-  final AppFlavorConfig? config;
-  final Dio? _dio;
+  // const DioNetworkClient({
+  //   this.config,
+  //   Dio? dio,
+  // }) : _dio = dio;
+  //
+  // /// The flavor configuration.
+  // final AppFlavorConfig? config;
+  // final Dio? _dio;
 
   static final Map<String, Dio> _dioCache = {};
 
