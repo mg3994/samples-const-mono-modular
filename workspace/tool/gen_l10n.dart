@@ -1,11 +1,14 @@
 import 'dart:io';
+import 'package:path/path.dart' as p;
 
 void main(List<String> args) async {
-  // Execute the standard Flutter localization code generator inside the package directory.
+  // Target the packages/l10n directory relative to the workspace root.
+  final l10nPath = p.join(Directory.current.path, 'packages', 'l10n');
+
   final result = await Process.run(
     'flutter',
     ['gen-l10n'],
-    workingDirectory: Directory.current.path,
+    workingDirectory: l10nPath,
     runInShell: true,
   );
 
