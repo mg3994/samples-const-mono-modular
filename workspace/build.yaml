@@ -1,0 +1,27 @@
+targets:
+  $default:
+    sources:
+      - $package$
+      - lib/$lib$
+      - tools/drift_worker.dart
+      - "!build/**"
+      - "!**/build/**"
+      - "!**/generated/**"
+    builders:
+      build_web_compilers:entrypoint:
+        generate_for:
+          - tools/drift_worker.dart
+        options:
+          compiler: dart2js
+      ":copy_compiled_worker_js":
+        enabled: true
+
+builders:
+  copy_compiled_worker_js:
+    import: "tools/builder.dart"
+    builder_factories: ["CopyCompiledJs.new"]
+    required_inputs:
+      - .js
+    build_to: source
+    build_extensions:
+      "tools/drift_worker.dart": ["apps/blogstore/web/drift_worker.js"]

@@ -14,5 +14,9 @@ dependencies:
   path: any
 
 dev_dependencies:
+  build: ^4.0.7
+  build_runner: ^2.16.1
+  build_web_compilers: ^4.8.5
+  drift: ^2.35.0
   very_good_analysis: ^11.0.0
-#  custom_lint_builder: any
+

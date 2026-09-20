@@ -7,5 +7,11 @@ mklink "C:\Users\manis\Desktop\workspace\workspace\.agents\mcp_config.json" "C:\
 
 
 ```bash
-flutter pub add -d custom_lint bloc_signals_lint
+dart run build_runner build --workspace
 ```
+
+
+
+
+
+use `dio`
