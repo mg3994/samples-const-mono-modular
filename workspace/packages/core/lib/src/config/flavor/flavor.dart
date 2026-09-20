@@ -3,22 +3,22 @@ import 'flavor_interface.dart';
 class  Flavor implements FlavorInterface {
   static const Flavor development = Flavor._(
     baseUrl: String.fromEnvironment(
-      'DEV_BLOGGER_URL',
-      defaultValue: 'https://api.dev.yourdomain.com',
+      'SERVER_URL',
+      defaultValue: 'http://localhost:8080',
     ),
   );
 
   static const Flavor staging = Flavor._(
     baseUrl: String.fromEnvironment(
-      'STG_BLOGGER_URL',
-      defaultValue: 'https://api.stg.yourdomain.com',
+      'SERVER_URL',
+      defaultValue: 'http://localhost:8080',
     ),
   );
 
   static const Flavor production = Flavor._(
     baseUrl: String.fromEnvironment(
-      'PROD_BLOGGER_URL',
-      defaultValue: 'https://api.prod.yourdomain.com',
+      'SERVER_URL',
+      defaultValue: 'http://localhost:8080',
     ),
   );
 
