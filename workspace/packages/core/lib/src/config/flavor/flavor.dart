@@ -1,6 +1,6 @@
 import 'flavor_interface.dart';
 
-class Flavor implements FlavorInterface {
+class  Flavor implements FlavorInterface {
   static const Flavor development = Flavor._(
     baseUrl: String.fromEnvironment(
       'DEV_BLOGGER_URL',

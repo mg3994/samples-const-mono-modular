@@ -1,3 +1,3 @@
-abstract interface class BuildModeInterface {
-  const BuildModeInterface();
+abstract interface class const BuildModeInterface() {
+  // const BuildModeInterface();
 }

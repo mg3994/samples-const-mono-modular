@@ -1,4 +1,4 @@
-abstract interface class FlavorInterface {
+abstract interface class const  FlavorInterface() {
   String get baseUrl;
-  const FlavorInterface();
+  // const FlavorInterface();
 }

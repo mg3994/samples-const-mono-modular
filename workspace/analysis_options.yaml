@@ -3,3 +3,34 @@ include:
   - all_lint_rules.yaml
 formatter:
   trailing_commas: automate
+linter:
+  rules:
+    always_use_package_imports: false
+plugins:
+  bloc_signals_lint:
+    diagnostics:
+      # ====================
+      # Core Framework Rules
+      # ====================
+      avoid_duplicate_event_handlers: true
+      require_super_on_event: true
+      avoid_stream_transformers_on_bloc_signal: true
+      avoid_direct_signal_mutation_outside_bloc: true
+      avoid_top_level_bloc_signal_instances: true
+      require_cubit_signal_mixin_init: true
+      avoid_raw_signal_effects_in_bloc: true
+      prefer_named_replay_constructor: true
+      require_emit_in_helper_name: true
+      avoid_multiple_synchronous_emits: true
+
+      # ====================
+      # Flutter UI Rules
+      # ====================
+      avoid_emit_in_build: true
+      avoid_unmanaged_signal_effects: true
+      prefer_bloc_signal_provider_read_in_callbacks: true
+      avoid_providing_existing_instance_with_create: true
+      avoid_manual_close_on_provided_bloc: true
+      avoid_invalid_context_select_generics: true
+      avoid_context_watch_for_bloc_state: true
+      avoid_unused_select_result: true

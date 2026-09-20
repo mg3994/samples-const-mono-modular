@@ -1,16 +1,16 @@
-import 'build_mode/build_mode_interface.dart';
-import 'flavor/flavor_interface.dart';
 import 'build_mode/build_mode.dart' show BuildMode;
+import 'build_mode/build_mode_interface.dart';
 import 'flavor/flavor.dart' show Flavor;
+import 'flavor/flavor_interface.dart';
 
-final class FlavorConfig<
+final class const FlavorConfig<
   F extends FlavorInterface,
   B extends BuildModeInterface
-> {
-  const FlavorConfig({required this.flavor, required this.buildMode});
+>({required final F flavor, required final B buildMode}) {
+  // const FlavorConfig({required this.flavor, required this.buildMode});
 
-  final F flavor;
-  final B buildMode;
+  // final F flavor;
+  // final B buildMode;
 
   String get baseUrl => flavor.baseUrl;
 }
