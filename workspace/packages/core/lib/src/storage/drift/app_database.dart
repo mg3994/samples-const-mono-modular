@@ -8,10 +8,12 @@ part 'app_database.g.dart';
 
 @DriftDatabase(tables: [TasksTable])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor]) : super( executor ?? _openConnection());
+ AppDatabase([QueryExecutor? executor]) : super( executor ?? _openConnection());
 
   @override
   int get schemaVersion => 1;
+
+  
 }
 
 QueryExecutor _openConnection() {
