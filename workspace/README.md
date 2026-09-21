@@ -1,3 +1,6 @@
+# Idea 
+> selfish hook ("What's in it for me right now?")
+
 all commands till now 
 
 > cmd run as admin

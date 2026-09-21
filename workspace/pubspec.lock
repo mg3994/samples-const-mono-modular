@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "103.0.0"
+  analysis_server_plugin:
+    dependency: transitive
+    description:
+      name: analysis_server_plugin
+      sha256: c58b2a05b260a023eefd0848496ff6b113a318c6c95dad4215165a4bd54ae600
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.18"
   analyzer:
     dependency: transitive
     description:
@@ -17,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "13.3.0"
+  analyzer_plugin:
+    dependency: transitive
+    description:
+      name: analyzer_plugin
+      sha256: c2a75baf1657171cc7872db96a12b07e385873cf7a73f2b4f7638e9d0701ee53
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.12"
   archive:
     dependency: transitive
     description:
@@ -425,6 +441,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.12.0"
+  kaisel:
+    dependency: transitive
+    description:
+      name: kaisel
+      sha256: c205470b2fba57105e6bfdd5e43b6cf007e051fd2b2ef68639c96ab3e2d7c5e7
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  kaisel_core:
+    dependency: transitive
+    description:
+      name: kaisel_core
+      sha256: af9f87790eaea4980288a2f185e0350d6d80ebdedd62b0946e298dba01a0df37
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  kaisel_lint:
+    dependency: "direct dev"
+    description:
+      name: kaisel_lint
+      sha256: "4281ecc8a123a3e27aebda5c09653fff92992f0bee58f8fabb62592b77ab9fae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   leak_tracker:
     dependency: transitive
     description:

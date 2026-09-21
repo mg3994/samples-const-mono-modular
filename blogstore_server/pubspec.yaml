@@ -27,14 +27,14 @@ serverpod:
     flutter_build:
       windows: >-
         (if exist web\app rmdir /S /Q web\app)
-        & cd /D ..\blogstore_flutter
+        & cd /D ..\workspace\apps\blogstore
         & set ARGS=web --base-href /
         && (call flutter build %ARGS% || (flutter clean && call flutter build %ARGS%))
-        && xcopy /E /I /Y build\web ..\blogstore_server\web\app
+        && xcopy /E /I /Y build\web ..\..\..\blogstore_server\web\app
       posix: |
         rm -rf ../blogstore_server/web/app
-        cd ../blogstore_flutter
-        set -- web --base-href / --output ../blogstore_server/web/app
+        cd ../workspace/apps/blogstore
+        set -- web --base-href / --output ../../../blogstore_server/web/app
         flutter build "$@" || { flutter clean && flutter build "$@"; }
 
   # Companion Flutter apps that `serverpod start` can launch (Ctrl+R), keyed
