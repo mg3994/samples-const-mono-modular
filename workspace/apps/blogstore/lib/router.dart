@@ -58,8 +58,8 @@ class AppRouter {
 
           return proposedStack;
         },
-      ], builder: (BuildContext context, KaiselRoute route) {
-        return switch (route) {
+      ], builder: (BuildContext context, KaiselRoute currentRoute) {
+        return switch (currentRoute) {
 
           LoginRoute() => throw UnimplementedError(),
           HomeRoute() => throw UnimplementedError(),
