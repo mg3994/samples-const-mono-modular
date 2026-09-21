@@ -58,7 +58,7 @@ serverpod:
   #     FLAVOR=production
   flutter_apps:
     blogstore:
-      path: ../blogstore_flutter
+      path: ../workspace/apps/blogstore
       displayName: "Blogstore app"
       auto_launch: true
       target: lib/driver.dart

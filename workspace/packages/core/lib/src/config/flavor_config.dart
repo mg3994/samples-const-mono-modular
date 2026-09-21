@@ -25,8 +25,9 @@ const String appFlavor = String.fromEnvironment(
 const Flavor currentFlavor = appFlavor == 'dev' || appFlavor == 'development'
     ? Flavor.development
     : appFlavor == 'stg' || appFlavor == 'staging'
-        ? Flavor.staging
-        : Flavor.production;
+    ? Flavor.staging
+    : Flavor.production;
+
 /// Flavor Build Config
 const AppFlavorConfig currentFBConfig = FlavorConfig(
   flavor: currentFlavor,

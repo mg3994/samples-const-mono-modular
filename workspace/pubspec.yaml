@@ -1,9 +1,10 @@
-name: _
+name: workspace
 publish_to: none
 # repository: https://github.com/Antinna/workspace
 
 environment:
   sdk: ^3.13.4
+# resolution: workspace
 
 workspace:
   - apps/**

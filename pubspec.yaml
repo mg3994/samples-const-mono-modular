@@ -7,5 +7,5 @@ environment:
 workspace:
   - blogstore_client
   - blogstore_server
-  - blogstore_flutter
+  # - workspace
 
