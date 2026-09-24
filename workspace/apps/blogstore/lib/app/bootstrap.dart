@@ -378,6 +378,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // create seprate instance of database frst as this is a new isolate
   final db = AppDatabase();
   try {
+    /// Purge expired notifications before inserting the newly received message
+    await db.notificationMsgDao.deleteExpiredMessages();
     await db.notificationMsgDao.insertNotificationMessage(
       message.toCompanion(),
     );
@@ -388,13 +390,13 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 /// BLoC or manager responsible for loading application settings.
-abstract interface class AppSettingsBloc {
+abstract interface class AppearanceSettingsBloc {
   /// Asynchronously loads settings.
   Future<void> call();
 }
 
-/// Default implementation of [AppSettingsBloc].
-final class DefaultAppSettingsBloc implements AppSettingsBloc {
+/// Default implementation of [AppearanceSettingsBloc].
+final class DefaultAppearanceSettingsBloc implements AppearanceSettingsBloc {
   /// Creates a default app settings bloc.
   const new();
 
@@ -404,6 +406,8 @@ final class DefaultAppSettingsBloc implements AppSettingsBloc {
 
 /// Container holding pluggable external dependencies for bootstrap.
 final class const AppDependencies({
+  final AppFlavorConfig flavorConfig = currentFBConfig,
+
   /// Firebase initialization service.
   final FirebaseInitializer firebaseInitializer =
       const DefaultFirebaseInitializer(),
@@ -415,14 +419,14 @@ final class const AppDependencies({
   final NotificationGateway notificationGateway =
       const DefaultNotificationGateway(),
 
+  /// Runtime database instance (Optional in const constructor)
+  // final AppDatabase? db,
+  // final FirebaseAuth? auth,
+  // final FirebaseAnalytics? analytics,
+
   /// Application settings BLoC instance.
-  final AppSettingsBloc? appSettingBloc = const DefaultAppSettingsBloc(),
-
-  /// Optional Firebase Auth instance.
-  final FirebaseAuth? auth,
-
-  /// Optional Firebase Analytics instance.
-  final FirebaseAnalytics? analytics,
+  final AppearanceSettingsBloc? appSettingBloc =
+      const DefaultAppearanceSettingsBloc(),
 });
 
 /// Default instance of [AppDependencies].
@@ -445,13 +449,14 @@ class const BootStrap({
 }
 
 class _BootStrapState extends State<BootStrap> {
-  AppSettingsBloc? _appSettingsBloc;
-  AppRouter? _appRouter;
+  late final AppDatabase _db;
+  late final AppearanceSettingsBloc? _appearanceSettingsBloc;
+  late final AppRouter? _appRouter;
   double _progress = 0;
   String _loadingMessage = 'Starting application...';
 
-  /// Currently loaded [AppSettingsBloc], if available.
-  AppSettingsBloc? get appSettingsBloc => _appSettingsBloc;
+  /// Currently loaded [AppearanceSettingsBloc], if available.
+  AppearanceSettingsBloc? get appearanceSettingsBloc => _appearanceSettingsBloc;
 
   /// Currently configured [AppRouter], if available.
   AppRouter? get appRouter => _appRouter;
@@ -466,34 +471,39 @@ class _BootStrapState extends State<BootStrap> {
   }
 
   Future<void> _initAsync() async {
+    _db = AppDatabase();
     final firebaseInitializer = widget.dependencies.firebaseInitializer;
     final crashReporter = widget.dependencies.crashReporter;
     final notificationGateway = widget.dependencies.notificationGateway;
-
     try {
       _setProgress(0, 'Initializing Firebase...');
       await firebaseInitializer.initialize();
 
       widget.errors.attach((error, stackTrace) {
-        crashReporter.recordError(error, stackTrace, fatal: true);
+        unawaited(crashReporter.recordError(error, stackTrace, fatal: true));
       });
 
       _setProgress(0.25, 'Configuring notifications...');
-      await notificationGateway.registerBackgroundHandler(
-        firebaseMessagingBackgroundHandler,
+      unawaited(
+        notificationGateway.registerBackgroundHandler(
+          firebaseMessagingBackgroundHandler,
+        ),
       );
+      // Startup cleanup on active database connection
+      _setProgress(0.35, 'Cleaning up expired notifications...');
+      await _db.notificationMsgDao.deleteExpiredMessages();
       _setProgress(0.45, 'Configuring application...');
-      Intl.defaultLocale = PlatformDispatcher.instance.locale.toLanguageTag();
-      final appSettingsBloc =
-          widget.dependencies.appSettingBloc ??
-          widget.dependencies.appSettingBloc;
+      Intl.defaultLocale =
+          // db..... ??
+          PlatformDispatcher.instance.locale.toLanguageTag();
+      final appearanceSettingsBloc = widget.dependencies.appSettingBloc;
       _setProgress(0.60, 'Loading settings...');
-      await appSettingsBloc?.call();
+      await appearanceSettingsBloc?.call();
       _setProgress(0.75, 'Preparing navigation...');
-      final appRouter = AppRouter(appSettingBloc: appSettingsBloc);
+      final appRouter = AppRouter(appSettingBloc: appearanceSettingsBloc);
       if (!mounted) return;
       setState(() {
-        _appSettingsBloc = appSettingsBloc;
+        _appearanceSettingsBloc = appearanceSettingsBloc;
         _appRouter = appRouter;
         _progress = 1.0;
         _loadingMessage = 'Ready';

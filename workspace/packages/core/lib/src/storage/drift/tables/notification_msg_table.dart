@@ -2,9 +2,10 @@ import 'package:drift/drift.dart';
 
 import '../../../../core.dart' show AppDatabase;
 import '../app_database.dart';
+
 part 'notification_msg_table.g.dart';
 
-class const NotificationMessages() extends Table {
+class NotificationMessages extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   /// FCM message ID.
@@ -69,6 +70,29 @@ class NotificationMsgDao extends DatabaseAccessor<AppDatabase>
     with _$NotificationMsgDaoMixin {
   NotificationMsgDao(super.db);
 
+  /// Helper expression to identify expired messages:
+  /// (sent_time + ttl seconds < current_time)
+  Expression<bool> get _isNotExpired {
+    return notificationMessages.sentTime.isNull() |
+        notificationMessages.ttl.isNull() |
+        const CustomExpression<bool>(
+          'strftime("%s", sent_time) + ttl >= strftime("%s", "now")',
+        );
+  }
+
+  /// Deletes all messages where the TTL duration has elapsed since sentTime.
+  Future<int> deleteExpiredMessages() {
+    return (delete(notificationMessages)..where(
+          (table) =>
+              table.sentTime.isNotNull() &
+              table.ttl.isNotNull() &
+              const CustomExpression<bool>(
+                'strftime("%s", sent_time) + ttl < strftime("%s", "now")',
+              ),
+        ))
+        .go();
+  }
+
   Future<void> insertNotificationMessage(
     NotificationMessagesCompanion companion,
   ) {
@@ -88,31 +112,33 @@ class NotificationMsgDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<NotificationMessage?> getMessage(String messageId) {
-    return (select(
-      notificationMessages,
-    )..where((table) => table.messageId.equals(messageId))).getSingleOrNull();
+    return (select(notificationMessages)
+          ..where((table) => table.messageId.equals(messageId) & _isNotExpired))
+        .getSingleOrNull();
   }
 
   Stream<NotificationMessage?> watchMessage(String messageId) {
-    return (select(
-      notificationMessages,
-    )..where((table) => table.messageId.equals(messageId))).watchSingleOrNull();
+    return (select(notificationMessages)
+          ..where((table) => table.messageId.equals(messageId) & _isNotExpired))
+        .watchSingleOrNull();
   }
 
   Stream<List<NotificationMessage>> watchMessages() {
-    return select(notificationMessages).watch();
+    return (select(
+      notificationMessages,
+    )..where((table) => _isNotExpired)).watch();
   }
 
   Stream<List<NotificationMessage>> watchUnreadMessages() {
     return (select(
       notificationMessages,
-    )..where((table) => table.isOpened.equals(false))).watch();
+    )..where((table) => table.isOpened.equals(false) & _isNotExpired)).watch();
   }
 
   Stream<int> watchUnreadCount() {
     final query = selectOnly(notificationMessages)
       ..addColumns([notificationMessages.id.count()])
-      ..where(notificationMessages.isOpened.equals(false));
+      ..where(notificationMessages.isOpened.equals(false) & _isNotExpired);
 
     return query.watchSingle().map(
       (row) => row.read(notificationMessages.id.count()) ?? 0,
