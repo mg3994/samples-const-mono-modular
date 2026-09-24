@@ -500,7 +500,9 @@ class _BootStrapState extends State<BootStrap> {
       _setProgress(0.60, 'Loading settings...');
       await appearanceSettingsBloc?.call();
       _setProgress(0.75, 'Preparing navigation...');
-      final appRouter = AppRouter(appSettingBloc: appearanceSettingsBloc);
+      final appRouter = AppRouter(
+        appearenceSettingBloc: appearanceSettingsBloc,
+      ); //db, dependencies
       if (!mounted) return;
       setState(() {
         _appearanceSettingsBloc = appearanceSettingsBloc;

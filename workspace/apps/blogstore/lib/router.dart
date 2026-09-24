@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Application router managing navigation for the Blogstore app.
 final class const AppRouter({
   /// Optional application settings BLoC used for route configurations.
-  final Object? appSettingBloc,
+  final Object? appearenceSettingBloc,
 }) {
   /// Builds the top-level application widget with navigation.
   Widget buildApp(BuildContext context) {
@@ -14,11 +14,7 @@ final class const AppRouter({
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Welcome to Blogstore!'),
-        ),
-      ),
+      home: const Scaffold(body: Center(child: Text('Welcome to Blogstore!'))),
     );
   }
 }
