@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kaisel/kaisel.dart' show KaiselConfig, KaiselConfigCodec, KaiselModalRoute, KaiselRoute, KaiselShellConfig;
+part 'routes.dart';
+part 'app_stack_codec.dart';
 
 /// Application router managing navigation for the Blogstore app.
 final class const AppRouter({

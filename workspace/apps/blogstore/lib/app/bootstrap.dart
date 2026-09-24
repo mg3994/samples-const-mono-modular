@@ -13,6 +13,7 @@ import 'package:l10n/l10n.dart';
 import '../firebase_options.dart' show DefaultFirebaseOptions;
 import '../router.dart';
 import 'error/bootstrap_error.dart';
+import 'router/router.dart' show AppRouter;
 
 /// Measurement ID for Firebase Analytics on web.
 const String measurementId = 'G-EX30SN5FR5'; // Optional Not needed for now
