@@ -1,6 +1,7 @@
 import 'package:build/build.dart';
 
 class CopyCompiledJs extends Builder {
+  // ignore: unnecessary_type_name_in_constructor, avoid_unused_constructor_parameters
   CopyCompiledJs([BuilderOptions? options]);
 
   @override

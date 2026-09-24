@@ -1,6 +1,6 @@
 import 'build_mode_interface.dart';
 // enums are implicitly constant.
-enum const BuildMode() implements BuildModeInterface {
+enum BuildMode() implements BuildModeInterface {
 
   debug,
   profile,

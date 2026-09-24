@@ -9,9 +9,16 @@ environment:
 resolution: workspace
 
 dependencies:
+  core: any
+  firebase_analytics: any
+  firebase_auth: any
+  firebase_core: any
+  firebase_crashlytics: any
+  firebase_messaging: any
   flutter:
     sdk: flutter
   kaisel: any
+  l10n: any
 
 dev_dependencies:
   flutter_driver:

@@ -3,7 +3,7 @@ import 'dart:io' show Platform;
 import 'flavor_interface.dart';
 
 class Flavor implements FlavorInterface {
-  const Flavor._({String? customUrl}) : _customUrl = customUrl;
+  const new _() : _customUrl = null;
   final String? _customUrl;
   static const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
 

@@ -1,45 +1,28 @@
-import 'package:flutter/material.dart';
-import 'package:kaisel/kaisel.dart';
-import 'router.dart';
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
+import 'app/bootstrap.dart';
+import 'app/error/bootstrap_error.dart';
+
 
 void main() {
-  // Obtain the single global WidgetsBinding instance
-  final binding = WidgetsFlutterBinding.ensureInitialized()
-    ..deferFirstFrame();
+  final binding = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
 
+  final errors = BootstrapErrorReporter();
 
-  // Bootstrap containers (Clean Architecture + Iceberg Pattern)
-  final authContainer = AuthStateContainer(isLoggedIn: false);
-  final appRouter = AppRouter(authContainer: authContainer);
-  final routerConfig = appRouter.createRouterConfig();
+  FlutterError.onError = (details) {
+    errors.report(details.exception, details.stack ?? StackTrace.current);
+  };
 
-  binding.allowFirstFrame();
+  PlatformDispatcher.instance.onError = (error, stackTrace) {
+    errors.report(error, stackTrace);
+    return true;
+  };
 
-  runApp(BlogstoreApp(routerConfig: routerConfig));
-}
-
-class BlogstoreApp extends StatelessWidget {
-  final KaiselRouterConfig routerConfig;
-
-  const BlogstoreApp({super.key, required this.routerConfig});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Blogstore',
-      home: KaiselRouter(
-        config: routerConfig,
-        builder: (context, currentRoute) {
-          if (currentRoute is LoginRoute) {
-            return const Scaffold(
-              body: Center(child: Text('Login Screen')),
-            );
-          }
-          return const Scaffold(
-            body: Center(child: Text('Home Screen')),
-          );
-        },
-      ),
-    );
-  }
+  runZonedGuarded(
+    () => runApp(BootStrap(binding: binding, errors: errors)),
+    errors.report,
+  );
 }

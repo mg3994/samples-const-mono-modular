@@ -6,21 +6,21 @@ import 'package:test/test.dart';
 void main() {
   group('Flavor Configurations Tests', () {
     test('Flavor development maps correct name and fallback baseUrl', () {
-      final flavor = Flavor.development;
+      const flavor = Flavor.development;
       expect(flavor.name, 'development');
       expect(flavor.baseUrl, isNotEmpty);
       expect(flavor.baseUrl, contains('dev'));
     });
 
     test('Flavor staging maps correct name and fallback baseUrl', () {
-      final flavor = Flavor.staging;
+      const flavor = Flavor.staging;
       expect(flavor.name, 'staging');
       expect(flavor.baseUrl, isNotEmpty);
       expect(flavor.baseUrl, contains('stg'));
     });
 
     test('Flavor production maps correct name and fallback baseUrl', () {
-      final flavor = Flavor.production;
+      const flavor = Flavor.production;
       expect(flavor.name, 'production');
       expect(flavor.baseUrl, isNotEmpty);
       expect(flavor.baseUrl, contains('prod'));
@@ -35,7 +35,7 @@ void main() {
     });
 
     test('BuildMode current resolves cleanly', () {
-      final currentMode = BuildMode.current;
+      const currentMode = BuildMode.current;
       expect(currentMode, isNotNull);
     });
   });
