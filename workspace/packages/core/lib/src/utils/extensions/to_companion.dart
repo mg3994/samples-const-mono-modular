@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../../core.dart' show NotificationMessagesCompanion;
 
+// there will be watch and this watch will also do is it will compare sentime and ttl and will remove those expired notifications
 extension RemoteMessageToNotificationMessageCompanion on RemoteMessage {
   NotificationMessagesCompanion toCompanion() {
     final notification = this.notification;
