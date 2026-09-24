@@ -3,8 +3,8 @@ part of 'router.dart';
 final class AppStackCodec implements KaiselConfigCodec<AppRoute> {
   const AppStackCodec(this._dependencies, {this._appSettingBloc});
 
-  final Dependencies _dependencies;
-  final AppearenceSettingBloc? _appSettingBloc;
+  final AppDependencies _dependencies;
+  final AppearanceSettingsBloc? _appSettingBloc;
 
   static const _homeBranch = 0;
   static const _settingsBranch = 3;
@@ -45,15 +45,15 @@ final class AppStackCodec implements KaiselConfigCodec<AppRoute> {
   }
 
   KaiselConfig<AppRoute> _onboardingConfig() {
-    return KaiselConfig(mainStack: [const OnboardingRoute()]);
+    return KaiselConfig(mainStack: const [OnboardingRoute()]);
   }
 
   KaiselConfig<AppRoute> _homeConfig() {
     return KaiselConfig(
-      mainStack: [const MainShellRoute()],
+      mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _homeBranch,
-        activeBranchStack: [HomeRoot()],
+        activeBranchStack: const [HomeRoot()],
       ),
     );
   }
@@ -70,40 +70,40 @@ final class AppStackCodec implements KaiselConfigCodec<AppRoute> {
 
   KaiselConfig<AppRoute> _settingsConfig() {
     return KaiselConfig(
-      mainStack: [const MainShellRoute()],
+      mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: [SettingsMasterRoute()],
+        activeBranchStack: const [SettingsMasterRoute()],
       ),
     );
   }
 
   KaiselConfig<AppRoute> _appearanceConfig() {
     return KaiselConfig(
-      mainStack: [const MainShellRoute()],
+      mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: [SettingsMasterRoute(), AppSettingRoute()],
+        activeBranchStack: const [SettingsMasterRoute(), AppSettingRoute()],
       ),
     );
   }
 
   KaiselConfig<AppRoute> _generalSettingsConfig() {
     return KaiselConfig(
-      mainStack: [const MainShellRoute()],
+      mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: [SettingsMasterRoute(), GeneralSettingRoute()],
+        activeBranchStack: const [SettingsMasterRoute(), GeneralSettingRoute()],
       ),
     );
   }
 
   KaiselConfig<AppRoute> _notificationsConfig() {
     return KaiselConfig(
-      mainStack: [const MainShellRoute()],
+      mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: [SettingsMasterRoute(), NotificationsSettingRoute()],
+        activeBranchStack: const [SettingsMasterRoute(), NotificationsSettingRoute()],
       ),
     );
   }

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import 'app/bootstrap.dart';
 import 'app/error/bootstrap_error.dart';
-
+import 'injection/dependency_injection.dart' show AppDependencies;
 
 void main() {
   final binding = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
@@ -21,8 +21,17 @@ void main() {
     return true;
   };
 
+  /// Default instance of [AppDependencies].
+  const defaultDependencies = AppDependencies();
+
   runZonedGuarded(
-    () => runApp(BootStrap(binding: binding, errors: errors)),
+    () => runApp(
+      BootStrap(
+        binding: binding,
+        errors: errors,
+        appDependencies: defaultDependencies,
+      ),
+    ),
     errors.report,
   );
 }

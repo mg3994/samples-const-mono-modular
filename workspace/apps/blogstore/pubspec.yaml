@@ -9,6 +9,7 @@ environment:
 resolution: workspace
 
 dependencies:
+  bloc_signals_flutter: ^1.3.2
   core: any
   firebase_analytics: any
   firebase_auth: any

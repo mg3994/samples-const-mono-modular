@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart' show BlocSignalProvider, MultiBlocSignalProvider;
 import 'package:core/core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +11,9 @@ import 'package:flutter/foundation.dart' show PlatformDispatcher, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 
+import '../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart' show AppearanceSettingsBloc;
 import '../firebase_options.dart' show DefaultFirebaseOptions;
+import '../injection/dependency_injection.dart' show AppDependencies, AppDependenciesProvider;
 import '../router.dart';
 import 'error/bootstrap_error.dart';
 import 'router/router.dart' show AppRouter;
@@ -390,49 +393,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-/// BLoC or manager responsible for loading application settings.
-abstract interface class AppearanceSettingsBloc {
-  /// Asynchronously loads settings.
-  Future<void> call();
-}
-
-/// Default implementation of [AppearanceSettingsBloc].
-final class DefaultAppearanceSettingsBloc implements AppearanceSettingsBloc {
-  /// Creates a default app settings bloc.
-  const new();
-
-  @override
-  Future<void> call() async {}
-}
-
-/// Container holding pluggable external dependencies for bootstrap.
-final class const AppDependencies({
-  final AppFlavorConfig flavorConfig = currentFBConfig,
-
-  /// Firebase initialization service.
-  final FirebaseInitializer firebaseInitializer =
-      const DefaultFirebaseInitializer(),
-
-  /// Crashlytics / error reporting service.
-  final CrashReporter crashReporter = const DefaultCrashReporter(),
-
-  /// Notification gateway service.
-  final NotificationGateway notificationGateway =
-      const DefaultNotificationGateway(),
-
-  /// Runtime database instance (Optional in const constructor)
-  // final AppDatabase? db,
-  // final FirebaseAuth? auth,
-  // final FirebaseAnalytics? analytics,
-
-  /// Application settings BLoC instance.
-  final AppearanceSettingsBloc? appSettingBloc =
-      const DefaultAppearanceSettingsBloc(),
-});
-
-/// Default instance of [AppDependencies].
-const AppDependencies defaultDependencies = AppDependencies();
-
 /// Root bootstrap widget initializing dependencies and managing splash state.
 class const BootStrap({
   /// Application binding used to defer and allow frames.
@@ -442,7 +402,7 @@ class const BootStrap({
   required final BootstrapErrorReporter errors,
 
   /// Pluggable service dependencies for the application bootstrap.
-  final AppDependencies dependencies = defaultDependencies,
+  required final AppDependencies appDependencies,
   super.key,
 }) extends StatefulWidget {
   @override
@@ -456,11 +416,6 @@ class _BootStrapState extends State<BootStrap> {
   double _progress = 0;
   String _loadingMessage = 'Starting application...';
 
-  /// Currently loaded [AppearanceSettingsBloc], if available.
-  AppearanceSettingsBloc? get appearanceSettingsBloc => _appearanceSettingsBloc;
-
-  /// Currently configured [AppRouter], if available.
-  AppRouter? get appRouter => _appRouter;
 
   void _setProgress(double progress, String message) {
     if (!mounted) return;
@@ -473,9 +428,9 @@ class _BootStrapState extends State<BootStrap> {
 
   Future<void> _initAsync() async {
     _db = AppDatabase();
-    final firebaseInitializer = widget.dependencies.firebaseInitializer;
-    final crashReporter = widget.dependencies.crashReporter;
-    final notificationGateway = widget.dependencies.notificationGateway;
+    final firebaseInitializer = widget.appDependencies.firebaseInitializer;
+    final crashReporter = widget.appDependencies.crashReporter;
+    final notificationGateway = widget.appDependencies.notificationGateway;
     try {
       _setProgress(0, 'Initializing Firebase...');
       await firebaseInitializer.initialize();
@@ -497,9 +452,9 @@ class _BootStrapState extends State<BootStrap> {
       Intl.defaultLocale =
           // db..... ??
           PlatformDispatcher.instance.locale.toLanguageTag();
-      final appearanceSettingsBloc = widget.dependencies.appSettingBloc;
+      final appearanceSettingsBloc = AppearanceSettingsBloc();
       _setProgress(0.60, 'Loading settings...');
-      await appearanceSettingsBloc?.call();
+      // await appearanceSettingsBloc.loadSettings();
       _setProgress(0.75, 'Preparing navigation...');
       final appRouter = AppRouter(
         appearenceSettingBloc: appearanceSettingsBloc,
@@ -543,7 +498,12 @@ class _BootStrapState extends State<BootStrap> {
   Widget build(BuildContext context) {
     final router = _appRouter;
     if (router != null) {
-      return router.buildApp(context);
+      return AppDependenciesProvider(appDependencies: ,
+       child: MultiBlocSignalProvider(
+        providers: [
+          BlocSignalProvider<AppearanceSettingsBloc>.value(value: appearanceSettingsBloc),
+        ],
+        child: router.buildApp(context)));
     }
 
     return Directionality(

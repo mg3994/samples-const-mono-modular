@@ -1,2 +1,5 @@
 # mono repo is there yu can delete this file as well
+analyzer:
+  exclude:
+    - build/**
 include: ../../analysis_options.yaml
