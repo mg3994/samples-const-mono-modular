@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc_signals_flutter/bloc_signals_flutter.dart' show BlocSignalProvider, MultiBlocSignalProvider;
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart'
+    show BlocSignalProvider, MultiBlocSignalProvider;
 import 'package:core/core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,9 +12,11 @@ import 'package:flutter/foundation.dart' show PlatformDispatcher, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 
-import '../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart' show AppearanceSettingsBloc;
+import '../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart'
+    show AppearanceSettingsBloc;
 import '../firebase_options.dart' show DefaultFirebaseOptions;
-import '../injection/dependency_injection.dart' show AppDependencies, AppDependenciesProvider;
+import '../injection/dependency_injection.dart'
+    show AppDependencies, AppDependenciesProvider;
 import '../router.dart';
 import 'error/bootstrap_error.dart';
 import 'router/router.dart' show AppRouter;
@@ -397,13 +400,16 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class const BootStrap({
   /// Application binding used to defer and allow frames.
   required final WidgetsBinding binding,
+
   /// Error reporter capturing boot and runtime errors.
   required final BootstrapErrorReporter errors,
+
   /// Pluggable service dependencies for the application bootstrap.
-   final AppDependencies? appDependencies,
-   /// Good way to pass 
-   final AppearanceSettingsBloc? appearanceSettingsBloc,
-  
+  final AppDependencies? appDependencies,
+
+  /// Good way to pass
+  final AppearanceSettingsBloc? appearanceSettingsBloc,
+
   super.key,
 }) extends StatefulWidget {
   @override
@@ -416,12 +422,12 @@ class _BootStrapState extends State<BootStrap> {
   late final AppearanceSettingsBloc? _appearanceSettingsBloc;
   late final AppRouter? _appRouter;
 
-
   Future<void> _initAsync() async {
     _appDependencies = widget.appDependencies ?? const AppDependencies();
     _db = AppDatabase();
-    _appearanceSettingsBloc = widget.appearanceSettingsBloc ?? AppearanceSettingsBloc();
-    
+    _appearanceSettingsBloc =
+        widget.appearanceSettingsBloc ?? AppearanceSettingsBloc();
+
     final firebaseInitializer = _appDependencies.firebaseInitializer;
     final crashReporter = _appDependencies.crashReporter;
     final notificationGateway = _appDependencies.notificationGateway;
@@ -439,24 +445,25 @@ class _BootStrapState extends State<BootStrap> {
       await _db.notificationMsgDao.deleteExpiredMessages();
       final locale = PlatformDispatcher.instance.locale;
 
-      Intl.defaultLocale = Locale(locale.languageCode, locale.countryCode)
-      .toString();
-      
+      Intl.defaultLocale =  Locale(
+        locale.languageCode,
+        locale.countryCode,
+      ).toString();
+
       // await _appearanceSettingsBloc.loadSettings();
-      
+
       final appRouter = AppRouter(
-        appearenceSettingBloc: _appearanceSettingsBloc ,
+        appearenceSettingBloc: _appearanceSettingsBloc,
       ); //db, dependencies
       if (!mounted) return;
       setState(() {
         _appRouter = appRouter;
-       
       });
       await notificationGateway.requestPermission();
       // Bootstrap catches any exception or error during initialization.
       // ignore: avoid_catches_without_on_clauses
     } catch (error, stackTrace) {
-       unawaited(crashReporter.recordError(error, stackTrace, fatal: true));
+      unawaited(crashReporter.recordError(error, stackTrace, fatal: true));
     } finally {
       _allowFirstFrame();
     }
@@ -484,12 +491,17 @@ class _BootStrapState extends State<BootStrap> {
   Widget build(BuildContext context) {
     final router = _appRouter;
     if (router != null) {
-      return AppDependenciesProvider(appDependencies: ,
-       child: MultiBlocSignalProvider(
-        providers: [
-          BlocSignalProvider<AppearanceSettingsBloc>.value(value: appearanceSettingsBloc),
-        ],
-        child: router.buildApp(context)));
+      return AppDependenciesProvider(
+        appDependencies: _appDependencies,
+        child: MultiBlocSignalProvider(
+          providers: [
+            BlocSignalProvider<AppearanceSettingsBloc>.value(
+              value: appearanceSettingsBloc,
+            ),
+          ],
+          child: router.buildApp(context),
+        ),
+      );
     }
 
     return const Directionality(

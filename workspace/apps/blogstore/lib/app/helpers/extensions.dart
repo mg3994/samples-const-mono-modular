@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
-    show MaterialLocalizations, Theme, ThemeData;
+    show
+        MaterialLocalizations,
+        ScaffoldMessenger,
+        ScaffoldMessengerState,
+        Theme,
+        ThemeData;
 import 'package:l10n/l10n.dart';
 
-import '../../injection/dependency_injection.dart' show AppDependencies, AppDependenciesProvider;
+import '../../injection/dependency_injection.dart'
+    show AppDependencies, AppDependenciesProvider;
 
 ///
 extension BuildContextLocalizationExtensions on BuildContext {
@@ -19,5 +25,14 @@ extension BuildContextLocalizationExtensions on BuildContext {
   /// The current theme for this context.
   ThemeData get theme => Theme.of(this);
 
+  /// The current media query for this context.
+  MediaQueryData get mq => MediaQuery.of(this);
+
+  /// The current scaffoldMessenger state for this context.
+  ScaffoldMessengerState get sm => ScaffoldMessenger.of(this);
+
+  
+
+  /// The current app dependencies for this context.
   AppDependencies get appDependencies => AppDependenciesProvider.of(this);
 }
