@@ -1,0 +1,6 @@
+# # build.yaml
+# targets:
+#   $default:
+#     builders:
+#       flutter_gen_l10n:
+#         enabled: true

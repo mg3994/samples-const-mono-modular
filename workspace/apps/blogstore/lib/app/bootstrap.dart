@@ -397,12 +397,13 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class const BootStrap({
   /// Application binding used to defer and allow frames.
   required final WidgetsBinding binding,
-
   /// Error reporter capturing boot and runtime errors.
   required final BootstrapErrorReporter errors,
-
   /// Pluggable service dependencies for the application bootstrap.
-  required final AppDependencies appDependencies,
+   final AppDependencies? appDependencies,
+   /// Good way to pass 
+   final AppearanceSettingsBloc? appearanceSettingsBloc,
+  
   super.key,
 }) extends StatefulWidget {
   @override
@@ -410,67 +411,52 @@ class const BootStrap({
 }
 
 class _BootStrapState extends State<BootStrap> {
+  late final AppDependencies _appDependencies;
   late final AppDatabase _db;
   late final AppearanceSettingsBloc? _appearanceSettingsBloc;
   late final AppRouter? _appRouter;
-  double _progress = 0;
-  String _loadingMessage = 'Starting application...';
 
-
-  void _setProgress(double progress, String message) {
-    if (!mounted) return;
-
-    setState(() {
-      _progress = progress;
-      _loadingMessage = message;
-    });
-  }
 
   Future<void> _initAsync() async {
+    _appDependencies = widget.appDependencies ?? const AppDependencies();
     _db = AppDatabase();
-    final firebaseInitializer = widget.appDependencies.firebaseInitializer;
-    final crashReporter = widget.appDependencies.crashReporter;
-    final notificationGateway = widget.appDependencies.notificationGateway;
+    _appearanceSettingsBloc = widget.appearanceSettingsBloc ?? AppearanceSettingsBloc();
+    
+    final firebaseInitializer = _appDependencies.firebaseInitializer;
+    final crashReporter = _appDependencies.crashReporter;
+    final notificationGateway = _appDependencies.notificationGateway;
     try {
-      _setProgress(0, 'Initializing Firebase...');
       await firebaseInitializer.initialize();
-
       widget.errors.attach((error, stackTrace) {
         unawaited(crashReporter.recordError(error, stackTrace, fatal: true));
       });
-
-      _setProgress(0.25, 'Configuring notifications...');
       unawaited(
         notificationGateway.registerBackgroundHandler(
           firebaseMessagingBackgroundHandler,
         ),
       );
       // Startup cleanup on active database connection
-      _setProgress(0.35, 'Cleaning up expired notifications...');
       await _db.notificationMsgDao.deleteExpiredMessages();
-      _setProgress(0.45, 'Configuring application...');
-      Intl.defaultLocale =
-          // db..... ??
-          PlatformDispatcher.instance.locale.toLanguageTag();
-      final appearanceSettingsBloc = AppearanceSettingsBloc();
-      _setProgress(0.60, 'Loading settings...');
-      // await appearanceSettingsBloc.loadSettings();
-      _setProgress(0.75, 'Preparing navigation...');
+      final locale = PlatformDispatcher.instance.locale;
+
+      Intl.defaultLocale = Locale(locale.languageCode, locale.countryCode)
+      .toString();
+      
+      // await _appearanceSettingsBloc.loadSettings();
+      
       final appRouter = AppRouter(
-        appearenceSettingBloc: appearanceSettingsBloc,
+        appearenceSettingBloc: _appearanceSettingsBloc ,
       ); //db, dependencies
       if (!mounted) return;
       setState(() {
-        _appearanceSettingsBloc = appearanceSettingsBloc;
         _appRouter = appRouter;
-        _progress = 1.0;
-        _loadingMessage = 'Ready';
+       
       });
       await notificationGateway.requestPermission();
       // Bootstrap catches any exception or error during initialization.
       // ignore: avoid_catches_without_on_clauses
     } catch (error, stackTrace) {
-      crashReporter.recordError(error, stackTrace, fatal: true);
+       unawaited(crashReporter.recordError(error, stackTrace, fatal: true));
     } finally {
       _allowFirstFrame();
     }
@@ -506,28 +492,29 @@ class _BootStrapState extends State<BootStrap> {
         child: router.buildApp(context)));
     }
 
-    return Directionality(
+    return const Directionality(
       textDirection: TextDirection.ltr,
       child: Material(
-        color: const Color(0xFF121212),
+        color: Color(0xFF121212),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                width: 200,
-                child: LinearProgressIndicator(
-                  value: _progress > 0 ? _progress : null,
-                  backgroundColor: const Color(0xFF2C2C2C),
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color(0xFF6750A4),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              // SizedBox(
+              //   width: 200,
+              //   child: LinearProgressIndicator(
+              //     value: _progress > 0 ? _progress : null,
+              //     backgroundColor: const Color(0xFF2C2C2C),
+              //     valueColor: const AlwaysStoppedAnimation<Color>(
+              //       Color(0xFF6750A4),
+              //     ),
+              //   ),
+              // ),
+              SizedBox(height: 16),
               Text(
-                _loadingMessage,
-                style: const TextStyle(color: Color(0xFFE0E0E0), fontSize: 14),
+                // _loadingMessage,
+                "Loading...",
+                style: TextStyle(color: Color(0xFFE0E0E0), fontSize: 14),
               ),
             ],
           ),
