@@ -15,8 +15,9 @@ class AppearanceSettingScreen extends StatelessWidget {
     final theme = context.theme;
     final mq = context.mq;
     final sm = context.sm;
+    final pageScope = context.pageScope;
     final isCompact = mq.size.width < 700;
-    final isOnlyPage = KaiselPageScope.maybeOf(context)?.isBottom ?? false;
+    final isOnlyPage = pageScope?.isBottom ?? false;
     // On wide screens, master & detail are visible side-by-side: disable the back button
     final showBackButton = isCompact && !isOnlyPage;
     return BlocSignalProvider<AppSettingBloc>.value(

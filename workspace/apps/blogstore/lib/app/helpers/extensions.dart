@@ -6,6 +6,7 @@ import 'package:flutter/material.dart'
         ScaffoldMessengerState,
         Theme,
         ThemeData;
+import 'package:kaisel/kaisel.dart' show KaiselPageScope;
 import 'package:l10n/l10n.dart';
 
 import '../../injection/dependency_injection.dart'
@@ -31,7 +32,8 @@ extension BuildContextLocalizationExtensions on BuildContext {
   /// The current scaffoldMessenger state for this context.
   ScaffoldMessengerState get sm => ScaffoldMessenger.of(this);
 
-  
+  /// The current page scope for this context.
+  KaiselPageScope? get pageScope => KaiselPageScope.maybeOf(this);
 
   /// The current app dependencies for this context.
   AppDependencies get appDependencies => AppDependenciesProvider.of(this);
