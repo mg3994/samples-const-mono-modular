@@ -4,7 +4,7 @@ import 'package:kaisel/kaisel.dart';
 
 import '../../../../../app/app.dart' show BuildContextLocalizationExtensions;
 
-class AppearanceSettingScreen extends StatelessWidget {
+class AppearanceSettingsScreen extends StatelessWidget {
   const new({super.key});
 
   @override
