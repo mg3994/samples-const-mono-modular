@@ -3,7 +3,12 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import '../../../core.dart' show NotificationMessagesCompanion;
+import '../../../core.dart'
+    show
+        AppearanceSettingsCompanion,
+        AppearanceSettingsData,
+        AppearanceSettingsState,
+        NotificationMessagesCompanion;
 
 // there will be watch and this watch will also do is it will compare sentime and ttl and will remove those expired notifications
 extension RemoteMessageToNotificationMessageCompanion on RemoteMessage {
@@ -35,4 +40,24 @@ extension RemoteMessageToNotificationMessageCompanion on RemoteMessage {
       receivedAt: DateTime.now(),
     );
   }
+}
+
+extension AppearanceSettingsDataX on AppearanceSettingsData {
+  AppearanceSettingsState toState() => (
+    themeMode: themeMode,
+    locale: locale,
+    seedColor: seedColor,
+    updatedAt: updatedAt,
+  );
+}
+
+extension AppearanceSettingsStateToCompanion on AppearanceSettingsState {
+  AppearanceSettingsCompanion toCompanion({int id = 1}) =>
+      AppearanceSettingsCompanion(
+        id: Value(id),
+        themeMode: Value(themeMode),
+        locale: Value(locale),
+        seedColor: Value(seedColor),
+        updatedAt: Value(updatedAt),
+      );
 }

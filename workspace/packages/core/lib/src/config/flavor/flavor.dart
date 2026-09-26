@@ -1,20 +1,24 @@
-import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/material.dart';
 
 import 'flavor_interface.dart';
 
 class Flavor implements FlavorInterface {
-  const new _() : _customUrl = null;
+  // ignore: unused_element_parameter
+  const Flavor._(this.name, [this._customUrl]);
+
+  final String name;
   final String? _customUrl;
-  static const bool kIsWeb = bool.fromEnvironment('dart.library.js_interop');
 
-  /// Returns the localhost address for the current platform at runtime.
   static String get localhost =>
-      (!kIsWeb && Platform.isAndroid) ? '10.0.2.2' : 'localhost';
+      (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+      ? '10.0.2.2'
+      : 'localhost';
 
-  // Flavor instances remain `const`
-  static const Flavor development = Flavor._();
-  static const Flavor staging = Flavor._();
-  static const Flavor production = Flavor._();
+  static const Flavor development = Flavor._('development');
+  static const Flavor staging = Flavor._('staging');
+  static const Flavor production = Flavor._('production');
 
   @override
   String get baseUrl {
@@ -24,9 +28,24 @@ class Flavor implements FlavorInterface {
     return 'http://$localhost:8080';
   }
 
-  String get name {
-    if (identical(this, development)) return 'development';
-    if (identical(this, staging)) return 'staging';
-    return 'production';
-  }
+  @override
+  Locale get defaultLocale => switch (this) {
+    Flavor.development => const Locale('en'),
+    Flavor.staging => const Locale('en'),
+    _ => const Locale('en'),
+  };
+
+  @override
+  ThemeMode get defaultThemeMode => switch (this) {
+    Flavor.development => ThemeMode.system,
+    Flavor.staging => ThemeMode.system,
+    _ => ThemeMode.system,
+  };
+
+  @override
+  Color get defaultThemeSeedColor => switch (this) {
+    Flavor.development => Colors.blue,
+    Flavor.staging => Colors.green,
+    _ => Colors.orange,
+  };
 }

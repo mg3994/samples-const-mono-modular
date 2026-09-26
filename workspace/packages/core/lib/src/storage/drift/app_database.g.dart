@@ -1434,7 +1434,6 @@ class $AppearanceSettingsTable extends AppearanceSettings
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(1),
   );
   @override
   late final GeneratedColumnWithTypeConverter<ThemeMode, String> themeMode =
@@ -1443,8 +1442,7 @@ class $AppearanceSettingsTable extends AppearanceSettings
         aliasedName,
         false,
         type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: Constant(ThemeMode.system.name),
+        requiredDuringInsert: true,
       ).withConverter<ThemeMode>($AppearanceSettingsTable.$converterthemeMode);
   @override
   late final GeneratedColumnWithTypeConverter<Locale, String> locale =
@@ -1453,8 +1451,7 @@ class $AppearanceSettingsTable extends AppearanceSettings
         aliasedName,
         false,
         type: DriftSqlType.string,
-        requiredDuringInsert: false,
-        defaultValue: const Constant('en'),
+        requiredDuringInsert: true,
       ).withConverter<Locale>($AppearanceSettingsTable.$converterlocale);
   @override
   late final GeneratedColumnWithTypeConverter<Color, int> seedColor =
@@ -1463,8 +1460,7 @@ class $AppearanceSettingsTable extends AppearanceSettings
         aliasedName,
         false,
         type: DriftSqlType.int,
-        requiredDuringInsert: false,
-        defaultValue: const Constant(0xFFFF9800),
+        requiredDuringInsert: true,
       ).withConverter<Color>($AppearanceSettingsTable.$converterseedColor);
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
@@ -1475,8 +1471,7 @@ class $AppearanceSettingsTable extends AppearanceSettings
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
+    requiredDuringInsert: true,
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -1506,6 +1501,8 @@ class $AppearanceSettingsTable extends AppearanceSettings
         _updatedAtMeta,
         updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -1559,27 +1556,19 @@ class $AppearanceSettingsTable extends AppearanceSettings
 
 class AppearanceSettingsData extends DataClass
     implements Insertable<AppearanceSettingsData> {
-  /// Primary key identifying the settings profile (defaults to 1).
+  /// Primary key identifying the settings profile.
   final int id;
 
-  /// User's theme mode preference: system, light, or dark.
-  ///
-  /// Uses Drift enum support [textEnum] with default [ThemeMode.system].
+  /// User's theme mode preference.
   final ThemeMode themeMode;
 
   /// Selected application locale.
-  ///
-  /// Defaults to English ('en').
   final Locale locale;
 
   /// Primary seed color used for dynamic Material 3 color scheming.
-  ///
-  /// Defaults to orange (0xFFFF9800).
   final Color seedColor;
 
   /// Timestamp when the settings were last updated.
-  ///
-  /// Defaults to the current date and time.
   final DateTime updatedAt;
   const AppearanceSettingsData({
     required this.id,
@@ -1714,11 +1703,14 @@ class AppearanceSettingsCompanion
   });
   AppearanceSettingsCompanion.insert({
     this.id = const Value.absent(),
-    this.themeMode = const Value.absent(),
-    this.locale = const Value.absent(),
-    this.seedColor = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-  });
+    required ThemeMode themeMode,
+    required Locale locale,
+    required Color seedColor,
+    required DateTime updatedAt,
+  }) : themeMode = Value(themeMode),
+       locale = Value(locale),
+       seedColor = Value(seedColor),
+       updatedAt = Value(updatedAt);
   static Insertable<AppearanceSettingsData> custom({
     Expression<int>? id,
     Expression<String>? themeMode,
@@ -2509,10 +2501,10 @@ typedef $$TasksTableTableProcessedTableManager =
 typedef $$AppearanceSettingsTableCreateCompanionBuilder =
     AppearanceSettingsCompanion Function({
       Value<int> id,
-      Value<ThemeMode> themeMode,
-      Value<Locale> locale,
-      Value<Color> seedColor,
-      Value<DateTime> updatedAt,
+      required ThemeMode themeMode,
+      required Locale locale,
+      required Color seedColor,
+      required DateTime updatedAt,
     });
 typedef $$AppearanceSettingsTableUpdateCompanionBuilder =
     AppearanceSettingsCompanion Function({
@@ -2676,10 +2668,10 @@ class $$AppearanceSettingsTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<ThemeMode> themeMode = const Value.absent(),
-                Value<Locale> locale = const Value.absent(),
-                Value<Color> seedColor = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
+                required ThemeMode themeMode,
+                required Locale locale,
+                required Color seedColor,
+                required DateTime updatedAt,
               }) => AppearanceSettingsCompanion.insert(
                 id: id,
                 themeMode: themeMode,

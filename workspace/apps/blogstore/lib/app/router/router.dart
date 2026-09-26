@@ -1,5 +1,6 @@
 import 'package:bloc_signals_flutter/bloc_signals_flutter.dart'
     show BlocSignalBuilder;
+import 'package:core/core.dart' show BuildMode;
 import 'package:flutter/material.dart';
 import 'package:kaisel/kaisel.dart'
     show
@@ -11,7 +12,10 @@ import 'package:kaisel/kaisel.dart'
 import 'package:l10n/l10n.dart' show AppLocalizations;
 
 import '../../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart'
-    show AppearanceSettingsBloc;
+    show AppearanceSettingsBloc, SetLocaleEvent;
+import '../../features/settings/appearance/presentation/bloc/appearance_settings_state.dart'
+    show AppearanceSettingsState;
+import '../../injection/dependency_injection.dart' show AppDependencies;
 import '../app.dart' show BuildContextLocalizationExtensions;
 part 'routes.dart';
 part 'app_stack_codec.dart';
@@ -36,9 +40,9 @@ final class const AppRouter({
 
           debugShowCheckedModeBanner:
               switch (context.appDependencies.flavorConfig.buildMode) {
-                .debug => true,
-                .profile => true,
-                .release => false,
+                BuildMode.debug => true,
+                BuildMode.profile => true,
+                _ => false, // Handles release and satisfies the interface check
               },
           themeMode: state.themeMode,
           locale: state.locale,

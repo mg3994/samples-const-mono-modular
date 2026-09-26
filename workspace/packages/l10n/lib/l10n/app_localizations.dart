@@ -104,6 +104,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'BlogStore'**
   String get appName;
+
+  /// Main title for the settings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// Placeholder hint text for settings search bar
+  ///
+  /// In en, this message translates to:
+  /// **'Search settings...'**
+  String get searchSettings;
+
+  /// Message displayed when search yields no setting categories
+  ///
+  /// In en, this message translates to:
+  /// **'No settings found'**
+  String get noSettingsFound;
+
+  /// Title for general settings category
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settingsGeneralTitle;
+
+  /// Subtitle description for general settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Profile, account details and preferences'**
+  String get settingsGeneralSubtitle;
+
+  /// Title for appearance settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearanceTitle;
+
+  /// Subtitle description for appearance settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Themes, accent colors, and app language'**
+  String get settingsAppearanceSubtitle;
+
+  /// Title for notifications settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotificationsTitle;
+
+  /// Subtitle description for notifications settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Message alerts, push notifications, and summaries'**
+  String get settingsNotificationsSubtitle;
+
+  /// Title for privacy and security settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get settingsPrivacyTitle;
+
+  /// Subtitle description for privacy and security settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Data protection, active sessions, and security'**
+  String get settingsPrivacySubtitle;
+
+  /// Title for the theme mode setting section
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Mode'**
+  String get themeModeTitle;
+
+  /// Subtitle description for the theme mode section
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how BlogStore looks to you'**
+  String get themeModeSubtitle;
+
+  /// Label for system default theme mode
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeModeSystem;
+
+  /// Label for light theme mode
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeModeLight;
+
+  /// Label for dark theme mode
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeModeDark;
+
+  /// Title for accent seed color setting section
+  ///
+  /// In en, this message translates to:
+  /// **'Accent Color'**
+  String get seedColorTitle;
+
+  /// Subtitle description for accent seed color setting
+  ///
+  /// In en, this message translates to:
+  /// **'Select a dynamic seed color for your theme'**
+  String get seedColorSubtitle;
+
+  /// Title for language locale setting section
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get localeTitle;
+
+  /// Subtitle description for language locale setting
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your preferred application language'**
+  String get localeSubtitle;
+
+  /// Button label to reset appearance settings to default values
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to Defaults'**
+  String get resetToDefault;
+
+  /// Status text shown when appearance settings are in sync
+  ///
+  /// In en, this message translates to:
+  /// **'All changes saved'**
+  String get syncStatusSynced;
+
+  /// Status text shown when appearance settings are syncing
+  ///
+  /// In en, this message translates to:
+  /// **'Saving changes...'**
+  String get syncStatusPending;
+
+  /// Status text shown when an error occurs during sync
+  ///
+  /// In en, this message translates to:
+  /// **'Sync error'**
+  String get syncStatusError;
+
+  /// Action button to retry sync
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get syncRetry;
 }
 
 class _AppLocalizationsDelegate

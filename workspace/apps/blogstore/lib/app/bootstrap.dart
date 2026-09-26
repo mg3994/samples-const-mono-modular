@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:bloc_signals_flutter/bloc_signals_flutter.dart'
     show BlocSignalProvider, MultiBlocSignalProvider;
 import 'package:core/core.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -12,6 +10,10 @@ import 'package:flutter/foundation.dart' show PlatformDispatcher, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 
+import '../features/settings/appearance/data/datasources/local/appearance_settings_local_datasource.dart'
+    show AppearanceSettingsLocalDatasource;
+import '../features/settings/appearance/data/repositories/appearance_settings_repository.dart'
+    show AppearanceSettingsRepositoryImpl;
 import '../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart'
     show AppearanceSettingsBloc;
 import '../firebase_options.dart' show DefaultFirebaseOptions;
@@ -382,16 +384,31 @@ final class const DefaultNotificationGateway({
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await const DefaultFirebaseInitializer().initialize();
-  // create seprate instance of database frst as this is a new isolate
-  final db = AppDatabase();
+
+  // 1. Read flavor identifier from payload data (or fallback to default)
+  final rawFlavor = message.data['flavor'] as String? ?? 'production';
+
+  // 2. Build the custom FlavorConfig dynamically
+  final customFlavor = switch (rawFlavor) {
+    'dev' || 'development' => Flavor.development,
+    'stg' || 'staging' => Flavor.staging,
+    _ => Flavor.production,
+  };
+
+  final customConfig = AppFlavorConfig(
+    flavor: customFlavor,
+    buildMode: BuildMode.current,
+  );
+
+  // 3. Pass customConfig into AppDatabase
+  final db = AppDatabase(flavorConfig: customConfig);
+
   try {
-    /// Purge expired notifications before inserting the newly received message
     await db.notificationMsgDao.deleteExpiredMessages();
     await db.notificationMsgDao.insertNotificationMessage(
       message.toCompanion(),
     );
   } finally {
-    // Close the database for onyl this isolate when this isolate has finished using it.
     await db.close();
   }
 }
@@ -419,14 +436,29 @@ class const BootStrap({
 class _BootStrapState extends State<BootStrap> {
   late final AppDependencies _appDependencies;
   late final AppDatabase _db;
-  late final AppearanceSettingsBloc? _appearanceSettingsBloc;
+  late final AppearanceSettingsBloc _appearanceSettingsBloc;
   late final AppRouter? _appRouter;
 
   Future<void> _initAsync() async {
     _appDependencies = widget.appDependencies ?? const AppDependencies();
-    _db = AppDatabase();
-    _appearanceSettingsBloc =
-        widget.appearanceSettingsBloc ?? AppearanceSettingsBloc();
+    _db = AppDatabase(flavorConfig: _appDependencies.flavorConfig);
+
+    if (widget.appearanceSettingsBloc != null) {
+      _appearanceSettingsBloc = widget.appearanceSettingsBloc!;
+    } else {
+      final localDatasource = AppearanceSettingsLocalDatasource(
+        db: _db,
+        appDependencies: _appDependencies,
+      );
+      final repository = AppearanceSettingsRepositoryImpl(
+        cloudStream: const Stream.empty(), // cloud stream – not wired yet
+        localStream: localDatasource.watchSettings,
+        appDependencies: _appDependencies,
+        updateRemoteSettings: (_) async {},
+        updateLocalSettings: localDatasource.updateSettings,
+      );
+      _appearanceSettingsBloc = AppearanceSettingsBloc(repository: repository);
+    }
 
     final firebaseInitializer = _appDependencies.firebaseInitializer;
     final crashReporter = _appDependencies.crashReporter;
@@ -445,7 +477,7 @@ class _BootStrapState extends State<BootStrap> {
       await _db.notificationMsgDao.deleteExpiredMessages();
       final locale = PlatformDispatcher.instance.locale;
 
-      Intl.defaultLocale =  Locale(
+      Intl.defaultLocale = Locale(
         locale.languageCode,
         locale.countryCode,
       ).toString();
@@ -453,7 +485,7 @@ class _BootStrapState extends State<BootStrap> {
       // await _appearanceSettingsBloc.loadSettings();
 
       final appRouter = AppRouter(
-        appearenceSettingBloc: _appearanceSettingsBloc,
+        appearanceSettingsBloc: _appearanceSettingsBloc,
       ); //db, dependencies
       if (!mounted) return;
       setState(() {
@@ -496,7 +528,7 @@ class _BootStrapState extends State<BootStrap> {
         child: MultiBlocSignalProvider(
           providers: [
             BlocSignalProvider<AppearanceSettingsBloc>.value(
-              value: appearanceSettingsBloc,
+              value: _appearanceSettingsBloc,
             ),
           ],
           child: router.buildApp(context),

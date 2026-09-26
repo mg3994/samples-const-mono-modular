@@ -1,5 +1,5 @@
 import 'package:core/core.dart';
-import 'package:core/src/config/build_mode/build_mode.dart';
+import 'package:core/src/config/build_mode/build_mode_interface.dart';
 import 'package:core/src/config/flavor/flavor.dart';
 import 'package:test/test.dart';
 

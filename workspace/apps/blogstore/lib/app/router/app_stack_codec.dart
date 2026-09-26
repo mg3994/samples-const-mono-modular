@@ -1,9 +1,9 @@
 part of 'router.dart';
 
 final class AppStackCodec implements KaiselConfigCodec<AppRoute> {
-  const AppStackCodec(this._dependencies, {this._appSettingBloc});
+  const AppStackCodec(this._appDependencies, {this._appSettingBloc});
 
-  final AppDependencies _dependencies;
+  final AppDependencies _appDependencies;
   final AppearanceSettingsBloc? _appSettingBloc;
 
   static const _homeBranch = 0;
@@ -34,7 +34,7 @@ final class AppStackCodec implements KaiselConfigCodec<AppRoute> {
 
   KaiselConfig<AppRoute> _rootConfig() {
     final hasCompletedOnboarding =
-        _appSettingBloc?.stateValue.hasCompletedOnboarding ?? false;
+        _......stateValue.hasCompletedOnboarding ?? false;
 
     debugPrint(
       '🔥 ROOT CONFIG → '
@@ -183,7 +183,7 @@ final class AppStackCodec implements KaiselConfigCodec<AppRoute> {
     }
 
     _appSettingBloc?.add(
-      AppSettingTemporarilyChangeLocaleEvent(
+      SetLocaleEvent(
         Locale.fromSubtags(languageCode: languageCode),
       ),
     );

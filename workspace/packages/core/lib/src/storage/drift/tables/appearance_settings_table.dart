@@ -1,3 +1,4 @@
+import 'package:core/core.dart' show FlavorConfig;
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart' show Color, Locale, ThemeMode;
 
@@ -42,36 +43,23 @@ class LocaleConverter extends TypeConverter<Locale, String> {
 }
 
 /// Database table representing appearance settings in Drift.
+/// Database table representing appearance settings in Drift.
 @DataClassName('AppearanceSettingsData')
 class AppearanceSettings extends Table {
-  /// Primary key identifying the settings profile (defaults to 1).
-  IntColumn get id => integer().withDefault(const Constant(1))();
+  /// Primary key identifying the settings profile.
+  IntColumn get id => integer()();
 
-  /// User's theme mode preference: system, light, or dark.
-  ///
-  /// Uses Drift enum support [textEnum] with default [ThemeMode.system].
-  TextColumn get themeMode =>
-      textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
+  /// User's theme mode preference.
+  TextColumn get themeMode => textEnum<ThemeMode>()();
 
   /// Selected application locale.
-  ///
-  /// Defaults to English ('en').
-  TextColumn get locale => text()
-      .map(const LocaleConverter())
-      .withDefault(const Constant('en'))();
+  TextColumn get locale => text().map(const LocaleConverter())();
 
   /// Primary seed color used for dynamic Material 3 color scheming.
-  ///
-  /// Defaults to orange (0xFFFF9800).
-  IntColumn get seedColor => integer()
-      .map(const ColorConverter())
-      .withDefault(const Constant(0xFFFF9800))();
+  IntColumn get seedColor => integer().map(const ColorConverter())();
 
   /// Timestamp when the settings were last updated.
-  ///
-  /// Defaults to the current date and time.
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -81,32 +69,44 @@ class AppearanceSettings extends Table {
 @DriftAccessor(tables: [AppearanceSettings])
 class AppearanceSettingsDao extends DatabaseAccessor<AppDatabase>
     with _$AppearanceSettingsDaoMixin {
-  /// Creates an [AppearanceSettingsDao].
-  AppearanceSettingsDao(super.attachedDatabase);
+  /// Standard single-parameter constructor required by Drift
+  new(super.attachedDatabase);
 
-  /// Watches appearance settings for the given [id] (defaults to 1).
+  /// Access flavorConfig directly from AppDatabase instance via `db`
+  FlavorConfig get _flavorConfig => db.flavorConfig;
+
+  /// Generate default insert companion dynamically using active flavor
+  AppearanceSettingsCompanion get defaultCompanion =>
+      AppearanceSettingsCompanion.insert(
+        id: const Value(1),
+        themeMode: _flavorConfig.defaultThemeMode,
+        locale: _flavorConfig.defaultLocale,
+        seedColor: _flavorConfig.defaultThemeSeedColor,
+        updatedAt: DateTime.now().toUtc(),
+      );
+
+  /// Watches appearance settings for given [id].
   Stream<AppearanceSettingsData?> watchSettings({int id = 1}) {
-    return (select(appearanceSettings)..where((t) => t.id.equals(id)))
-        .watchSingleOrNull();
+    return (select(
+      appearanceSettings,
+    )..where((t) => t.id.equals(id))).watchSingleOrNull();
   }
 
-  /// Fetches appearance settings for the given [id] once.
+  /// Fetches appearance settings for given [id].
   Future<AppearanceSettingsData?> getSettings({int id = 1}) {
-    return (select(appearanceSettings)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      appearanceSettings,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
-  /// Inserts or updates the appearance settings row.
+  /// Inserts or updates appearance settings.
   Future<void> upsertSettings(AppearanceSettingsCompanion companion) {
     return into(appearanceSettings).insertOnConflictUpdate(companion);
   }
 
-  /// Resets settings for the given [id] back to defaults.
+  /// Resets settings back to active flavor defaults.
   Future<void> resetSettings({int id = 1}) {
-    return into(appearanceSettings).insertOnConflictUpdate(
-      AppearanceSettingsCompanion.insert(
-        id: Value(id),
-      ),
-    );
+    return into(appearanceSettings)
+        .insertOnConflictUpdate(defaultCompanion.copyWith(id: Value(id)));
   }
 }

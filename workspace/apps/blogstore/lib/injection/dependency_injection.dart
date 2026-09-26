@@ -1,11 +1,9 @@
-import 'package:core/core.dart' show AppFlavorConfig, currentFBConfig;
+import 'package:core/core.dart' show FlavorConfig, currentFBConfig;
 import 'package:flutter/material.dart';
 
 import '../app/bootstrap.dart'
     show
-        AppearanceSettingsBloc,
         CrashReporter,
-        DefaultAppearanceSettingsBloc,
         DefaultCrashReporter,
         DefaultFirebaseInitializer,
         DefaultNotificationGateway,
@@ -14,7 +12,7 @@ import '../app/bootstrap.dart'
 
 /// Container holding pluggable external dependencies for bootstrap.
 final class const AppDependencies({
-  final AppFlavorConfig flavorConfig = currentFBConfig,
+  final FlavorConfig flavorConfig = currentFBConfig,
 
   /// Firebase initialization service.
   final FirebaseInitializer firebaseInitializer =
@@ -31,8 +29,6 @@ final class const AppDependencies({
   // final AppDatabase? db,
   // final FirebaseAuth? auth,
   // final FirebaseAnalytics? analytics,
-
-  
 });
 
 class const AppDependenciesProvider({

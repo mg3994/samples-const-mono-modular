@@ -1,5 +1,8 @@
+import 'package:core/core.dart'
+    show AppearanceSettingsStateX, FlavorConfig, currentFBConfig;
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:flutter/material.dart' show Color, Locale, ThemeMode;
 import 'package:path_provider/path_provider.dart';
 
 import 'tables/tables.dart';
@@ -16,7 +19,10 @@ part 'app_database.g.dart';
   tables: [NotificationMessages, TasksTable, AppearanceSettings],
   daos: [NotificationMsgDao, AppearanceSettingsDao],
 )
-class AppDatabase([QueryExecutor? executor]) extends _$AppDatabase {
+class AppDatabase({
+  final FlavorConfig flavorConfig = currentFBConfig,
+  QueryExecutor? executor,
+}) extends _$AppDatabase {
   this : super(executor ?? _openConnection());
   // AppDatabase([QueryExecutor? executor]) : super( executor ?? _openConnection());
   @override
