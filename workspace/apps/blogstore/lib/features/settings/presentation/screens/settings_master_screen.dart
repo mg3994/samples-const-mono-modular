@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../app/app.dart' show BuildContextLocalizationExtensions;
 import '../../../../app/router/router.dart'
     show
-        SettingsRoute,
-        GeneralSettingRoute,
         AppSettingRoute,
+        GeneralSettingRoute,
         NotificationsSettingRoute,
-        PrivacySettingRoute;
+        PrivacySettingRoute,
+        SettingsRoute;
 
 class const SettingsCategoryItemData({
   required final SettingsRoute route,
@@ -90,7 +90,12 @@ class _SettingsMasterScreenState extends State<SettingsMasterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final m10n = context.m10n;
+    final c10n = context.c10n;
     final theme = context.theme;
+    final mq = context.mq;
+    final sm = context.sm;
     final filtered = _getFilteredItems(context);
 
     return Scaffold(
@@ -101,7 +106,7 @@ class _SettingsMasterScreenState extends State<SettingsMasterScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Text(
-                context.l10n.settingsTitle,
+               l10n.settingsTitle,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.onSurface,
@@ -113,7 +118,7 @@ class _SettingsMasterScreenState extends State<SettingsMasterScreen> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: context.l10n.searchSettings,
+                  hintText: l10n.searchSettings,
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
@@ -135,7 +140,7 @@ class _SettingsMasterScreenState extends State<SettingsMasterScreen> {
               child: filtered.isEmpty
                   ? Center(
                       child: Text(
-                        context.l10n.noSettingsFound,
+                    l10n.noSettingsFound,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
@@ -185,7 +190,7 @@ class const _SettingsCategoryTile({
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final colorScheme = theme.colorScheme;
 
     final backgroundColor = isSelected

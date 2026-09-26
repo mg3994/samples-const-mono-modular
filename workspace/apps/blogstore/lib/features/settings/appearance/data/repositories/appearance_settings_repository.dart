@@ -1,24 +1,31 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:signals_core/signals_core.dart';
 
+import '../../domain/repositories/appearance_settings_repository.dart'
+    show AppearanceSettingsRepository;
+import '../../presentation/bloc/appearance_settings_bloc.dart'
+    show AppearanceSettingsState, AppearanceSettingsStateX;
 
 class AppearanceSettingsRepositoryImpl(
   Stream<AppearanceSettingsState> cloudStream,
   Stream<AppearanceSettingsState> localStream,
   Stream<bool> isConnectedStream, {
   required AppearanceSettingsState initialSettings,
-  required final Future<AppearanceSettingsState> Function() _fetchRemoteSettings,
-  required final Future<void> Function(AppearanceSettingsState settings) _updateRemoteSettings,
-  required final Future<void> Function(AppearanceSettingsState settings) _updateLocalSettings,
+  required final Future<AppearanceSettingsState> Function()
+  _fetchRemoteSettings,
+  required final Future<void> Function(AppearanceSettingsState settings)
+  _updateRemoteSettings,
+  required final Future<void> Function(AppearanceSettingsState settings)
+  _updateLocalSettings,
 }) implements AppearanceSettingsRepository {
-
   // Reactive State Signals
   late final Signal<AppearanceSettingsState> _settingsSignal;
   late final Signal<bool> _isConnectedSignal;
-  
+
   // Stream Connectors
-  late final Connect<AppearanceSettingsState, AppearanceSettingsState> _connector;
+  late final Connect<AppearanceSettingsState, AppearanceSettingsState>
+  _connector;
   late final Connect<bool, bool> _connectivityConnector;
 
   // Status Signals
@@ -31,7 +38,8 @@ class AppearanceSettingsRepositoryImpl(
     _settingsSignal = signal(initialSettings);
     _isConnectedSignal = signal(true);
 
-    _connectivityConnector = connect(_isConnectedSignal)..from(isConnectedStream);
+    _connectivityConnector = connect(_isConnectedSignal)
+      ..from(isConnectedStream);
 
     // Auto-clear sync error on fresh stream emissions
     final autoClearingCloudStream = cloudStream.map((data) {
@@ -106,12 +114,15 @@ class AppearanceSettingsRepositoryImpl(
     }
   }
 
-  void _reconcileIncomingData(AppearanceSettingsState incoming, {required String source}) {
+  void _reconcileIncomingData(
+    AppearanceSettingsState incoming, {
+    required String source,
+  }) {
     final current = _settingsSignal.value;
 
     if (incoming.updatedAt.isAfter(current.updatedAt)) {
       _settingsSignal.value = incoming;
-      
+
       if (source == 'cloud') {
         unawaited(_updateLocalSettings(incoming));
       }

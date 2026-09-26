@@ -14,12 +14,12 @@ dependencies:
   blogstore_client:
     path: ../../../blogstore_client
   dio: ^5.11.1
-  drift_flutter: ^0.3.1
-  path_provider: ^2.1.6
-
-
   drift: any
+  drift_flutter: ^0.3.1
   firebase_messaging: any # comment me
+  flutter:
+    sdk: flutter
+  path_provider: ^2.1.6
 dev_dependencies:
   build_runner: ^2.16.1
   drift_dev: ^2.35.0

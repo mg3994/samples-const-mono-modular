@@ -1420,15 +1420,390 @@ class TasksTableCompanion extends UpdateCompanion<TasksTableData> {
   }
 }
 
+class $AppearanceSettingsTable extends AppearanceSettings
+    with TableInfo<$AppearanceSettingsTable, AppearanceSettingsData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppearanceSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ThemeMode, String> themeMode =
+      GeneratedColumn<String>(
+        'theme_mode',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(ThemeMode.system.name),
+      ).withConverter<ThemeMode>($AppearanceSettingsTable.$converterthemeMode);
+  @override
+  late final GeneratedColumnWithTypeConverter<Locale, String> locale =
+      GeneratedColumn<String>(
+        'locale',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('en'),
+      ).withConverter<Locale>($AppearanceSettingsTable.$converterlocale);
+  @override
+  late final GeneratedColumnWithTypeConverter<Color, int> seedColor =
+      GeneratedColumn<int>(
+        'seed_color',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0xFFFF9800),
+      ).withConverter<Color>($AppearanceSettingsTable.$converterseedColor);
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    themeMode,
+    locale,
+    seedColor,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'appearance_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AppearanceSettingsData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppearanceSettingsData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppearanceSettingsData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      themeMode: $AppearanceSettingsTable.$converterthemeMode.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}theme_mode'],
+        )!,
+      ),
+      locale: $AppearanceSettingsTable.$converterlocale.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}locale'],
+        )!,
+      ),
+      seedColor: $AppearanceSettingsTable.$converterseedColor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}seed_color'],
+        )!,
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AppearanceSettingsTable createAlias(String alias) {
+    return $AppearanceSettingsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ThemeMode, String, String> $converterthemeMode =
+      const EnumNameConverter<ThemeMode>(ThemeMode.values);
+  static TypeConverter<Locale, String> $converterlocale =
+      const LocaleConverter();
+  static TypeConverter<Color, int> $converterseedColor = const ColorConverter();
+}
+
+class AppearanceSettingsData extends DataClass
+    implements Insertable<AppearanceSettingsData> {
+  /// Primary key identifying the settings profile (defaults to 1).
+  final int id;
+
+  /// User's theme mode preference: system, light, or dark.
+  ///
+  /// Uses Drift enum support [textEnum] with default [ThemeMode.system].
+  final ThemeMode themeMode;
+
+  /// Selected application locale.
+  ///
+  /// Defaults to English ('en').
+  final Locale locale;
+
+  /// Primary seed color used for dynamic Material 3 color scheming.
+  ///
+  /// Defaults to orange (0xFFFF9800).
+  final Color seedColor;
+
+  /// Timestamp when the settings were last updated.
+  ///
+  /// Defaults to the current date and time.
+  final DateTime updatedAt;
+  const AppearanceSettingsData({
+    required this.id,
+    required this.themeMode,
+    required this.locale,
+    required this.seedColor,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['theme_mode'] = Variable<String>(
+        $AppearanceSettingsTable.$converterthemeMode.toSql(themeMode),
+      );
+    }
+    {
+      map['locale'] = Variable<String>(
+        $AppearanceSettingsTable.$converterlocale.toSql(locale),
+      );
+    }
+    {
+      map['seed_color'] = Variable<int>(
+        $AppearanceSettingsTable.$converterseedColor.toSql(seedColor),
+      );
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AppearanceSettingsCompanion toCompanion(bool nullToAbsent) {
+    return AppearanceSettingsCompanion(
+      id: Value(id),
+      themeMode: Value(themeMode),
+      locale: Value(locale),
+      seedColor: Value(seedColor),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AppearanceSettingsData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AppearanceSettingsData(
+      id: serializer.fromJson<int>(json['id']),
+      themeMode: $AppearanceSettingsTable.$converterthemeMode.fromJson(
+        serializer.fromJson<String>(json['themeMode']),
+      ),
+      locale: serializer.fromJson<Locale>(json['locale']),
+      seedColor: serializer.fromJson<Color>(json['seedColor']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'themeMode': serializer.toJson<String>(
+        $AppearanceSettingsTable.$converterthemeMode.toJson(themeMode),
+      ),
+      'locale': serializer.toJson<Locale>(locale),
+      'seedColor': serializer.toJson<Color>(seedColor),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AppearanceSettingsData copyWith({
+    int? id,
+    ThemeMode? themeMode,
+    Locale? locale,
+    Color? seedColor,
+    DateTime? updatedAt,
+  }) => AppearanceSettingsData(
+    id: id ?? this.id,
+    themeMode: themeMode ?? this.themeMode,
+    locale: locale ?? this.locale,
+    seedColor: seedColor ?? this.seedColor,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AppearanceSettingsData copyWithCompanion(AppearanceSettingsCompanion data) {
+    return AppearanceSettingsData(
+      id: data.id.present ? data.id.value : this.id,
+      themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+      locale: data.locale.present ? data.locale.value : this.locale,
+      seedColor: data.seedColor.present ? data.seedColor.value : this.seedColor,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppearanceSettingsData(')
+          ..write('id: $id, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('locale: $locale, ')
+          ..write('seedColor: $seedColor, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, themeMode, locale, seedColor, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppearanceSettingsData &&
+          other.id == this.id &&
+          other.themeMode == this.themeMode &&
+          other.locale == this.locale &&
+          other.seedColor == this.seedColor &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AppearanceSettingsCompanion
+    extends UpdateCompanion<AppearanceSettingsData> {
+  final Value<int> id;
+  final Value<ThemeMode> themeMode;
+  final Value<Locale> locale;
+  final Value<Color> seedColor;
+  final Value<DateTime> updatedAt;
+  const AppearanceSettingsCompanion({
+    this.id = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.locale = const Value.absent(),
+    this.seedColor = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  AppearanceSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.locale = const Value.absent(),
+    this.seedColor = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  static Insertable<AppearanceSettingsData> custom({
+    Expression<int>? id,
+    Expression<String>? themeMode,
+    Expression<String>? locale,
+    Expression<int>? seedColor,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (themeMode != null) 'theme_mode': themeMode,
+      if (locale != null) 'locale': locale,
+      if (seedColor != null) 'seed_color': seedColor,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  AppearanceSettingsCompanion copyWith({
+    Value<int>? id,
+    Value<ThemeMode>? themeMode,
+    Value<Locale>? locale,
+    Value<Color>? seedColor,
+    Value<DateTime>? updatedAt,
+  }) {
+    return AppearanceSettingsCompanion(
+      id: id ?? this.id,
+      themeMode: themeMode ?? this.themeMode,
+      locale: locale ?? this.locale,
+      seedColor: seedColor ?? this.seedColor,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (themeMode.present) {
+      map['theme_mode'] = Variable<String>(
+        $AppearanceSettingsTable.$converterthemeMode.toSql(themeMode.value),
+      );
+    }
+    if (locale.present) {
+      map['locale'] = Variable<String>(
+        $AppearanceSettingsTable.$converterlocale.toSql(locale.value),
+      );
+    }
+    if (seedColor.present) {
+      map['seed_color'] = Variable<int>(
+        $AppearanceSettingsTable.$converterseedColor.toSql(seedColor.value),
+      );
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppearanceSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('locale: $locale, ')
+          ..write('seedColor: $seedColor, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $NotificationMessagesTable notificationMessages =
       $NotificationMessagesTable(this);
   late final $TasksTableTable tasksTable = $TasksTableTable(this);
+  late final $AppearanceSettingsTable appearanceSettings =
+      $AppearanceSettingsTable(this);
   late final NotificationMsgDao notificationMsgDao = NotificationMsgDao(
     this as AppDatabase,
   );
+  late final AppearanceSettingsDao appearanceSettingsDao =
+      AppearanceSettingsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1436,6 +1811,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     notificationMessages,
     tasksTable,
+    appearanceSettings,
   ];
 }
 
@@ -2130,6 +2506,227 @@ typedef $$TasksTableTableProcessedTableManager =
       TasksTableData,
       PrefetchHooks Function()
     >;
+typedef $$AppearanceSettingsTableCreateCompanionBuilder =
+    AppearanceSettingsCompanion Function({
+      Value<int> id,
+      Value<ThemeMode> themeMode,
+      Value<Locale> locale,
+      Value<Color> seedColor,
+      Value<DateTime> updatedAt,
+    });
+typedef $$AppearanceSettingsTableUpdateCompanionBuilder =
+    AppearanceSettingsCompanion Function({
+      Value<int> id,
+      Value<ThemeMode> themeMode,
+      Value<Locale> locale,
+      Value<Color> seedColor,
+      Value<DateTime> updatedAt,
+    });
+
+class $$AppearanceSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $AppearanceSettingsTable> {
+  $$AppearanceSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ThemeMode, ThemeMode, String> get themeMode =>
+      $composableBuilder(
+        column: $table.themeMode,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<Locale, Locale, String> get locale =>
+      $composableBuilder(
+        column: $table.locale,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<Color, Color, int> get seedColor =>
+      $composableBuilder(
+        column: $table.seedColor,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AppearanceSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppearanceSettingsTable> {
+  $$AppearanceSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get themeMode => $composableBuilder(
+    column: $table.themeMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get locale => $composableBuilder(
+    column: $table.locale,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get seedColor => $composableBuilder(
+    column: $table.seedColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AppearanceSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppearanceSettingsTable> {
+  $$AppearanceSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ThemeMode, String> get themeMode =>
+      $composableBuilder(column: $table.themeMode, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Locale, String> get locale =>
+      $composableBuilder(column: $table.locale, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Color, int> get seedColor =>
+      $composableBuilder(column: $table.seedColor, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AppearanceSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AppearanceSettingsTable,
+          AppearanceSettingsData,
+          $$AppearanceSettingsTableFilterComposer,
+          $$AppearanceSettingsTableOrderingComposer,
+          $$AppearanceSettingsTableAnnotationComposer,
+          $$AppearanceSettingsTableCreateCompanionBuilder,
+          $$AppearanceSettingsTableUpdateCompanionBuilder,
+          (
+            AppearanceSettingsData,
+            BaseReferences<
+              _$AppDatabase,
+              $AppearanceSettingsTable,
+              AppearanceSettingsData
+            >,
+          ),
+          AppearanceSettingsData,
+          PrefetchHooks Function()
+        > {
+  $$AppearanceSettingsTableTableManager(
+    _$AppDatabase db,
+    $AppearanceSettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AppearanceSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppearanceSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppearanceSettingsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<ThemeMode> themeMode = const Value.absent(),
+                Value<Locale> locale = const Value.absent(),
+                Value<Color> seedColor = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => AppearanceSettingsCompanion(
+                id: id,
+                themeMode: themeMode,
+                locale: locale,
+                seedColor: seedColor,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<ThemeMode> themeMode = const Value.absent(),
+                Value<Locale> locale = const Value.absent(),
+                Value<Color> seedColor = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => AppearanceSettingsCompanion.insert(
+                id: id,
+                themeMode: themeMode,
+                locale: locale,
+                seedColor: seedColor,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AppearanceSettingsTable, AppearanceSettingsData>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $AppearanceSettingsTable,
+                    AppearanceSettingsData
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AppearanceSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AppearanceSettingsTable,
+      AppearanceSettingsData,
+      $$AppearanceSettingsTableFilterComposer,
+      $$AppearanceSettingsTableOrderingComposer,
+      $$AppearanceSettingsTableAnnotationComposer,
+      $$AppearanceSettingsTableCreateCompanionBuilder,
+      $$AppearanceSettingsTableUpdateCompanionBuilder,
+      (
+        AppearanceSettingsData,
+        BaseReferences<
+          _$AppDatabase,
+          $AppearanceSettingsTable,
+          AppearanceSettingsData
+        >,
+      ),
+      AppearanceSettingsData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2138,4 +2735,6 @@ class $AppDatabaseManager {
       $$NotificationMessagesTableTableManager(_db, _db.notificationMessages);
   $$TasksTableTableTableManager get tasksTable =>
       $$TasksTableTableTableManager(_db, _db.tasksTable);
+  $$AppearanceSettingsTableTableManager get appearanceSettings =>
+      $$AppearanceSettingsTableTableManager(_db, _db.appearanceSettings);
 }

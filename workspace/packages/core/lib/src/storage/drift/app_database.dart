@@ -3,13 +3,18 @@ import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'tables/tables.dart';
-export 'tables/tables.dart' show NotificationMsgDao, NotificationMsgDaoManager;
+export 'tables/tables.dart'
+    show
+        AppearanceSettingsDao,
+        AppearanceSettingsDaoManager,
+        NotificationMsgDao,
+        NotificationMsgDaoManager;
 
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [NotificationMessages, TasksTable],
-  daos: [NotificationMsgDao],
+  tables: [NotificationMessages, TasksTable, AppearanceSettings],
+  daos: [NotificationMsgDao, AppearanceSettingsDao],
 )
 class AppDatabase([QueryExecutor? executor]) extends _$AppDatabase {
   this : super(executor ?? _openConnection());
